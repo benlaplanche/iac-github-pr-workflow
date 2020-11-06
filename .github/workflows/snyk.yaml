@@ -11,7 +11,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Run Snyk to check Kubernetes manifest file for issues
-        continue-on-error: true
+        id: snyk-iac
+        continue-on-error: false
         uses: snyk/actions/iac@master
         env:
           SNYK_TOKEN: ${{ secrets.SNYK_TOKEN }}
@@ -20,16 +21,19 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: snyk.sarif
-      - name: Snyk IaC Security Check
+      - if: steps.snyk-iac.outcome == failure
+      - name: Update status as failed
         uses: ouzi-dev/commit-status-updater@v1.1.0
         with:
           token: ${{ secrets.COMMIT_TOKEN }}
           status: failure
           description: Failed Snyk IaC Security tests
           failComment: Failed Snyk IaC Security tests
-          addHoldComment: Failed Snyk IaC
-      # - if: always()
-      #   uses: ouzi-dev/commit-status-updater@v1.1.0
-      #   with:
-      #     addHoldComment: "true"
-      #     status: "${{ job.status }}"
+      - if: steps.snyk-iac.outcome == success
+      - name: Update status as success
+        uses: ouzi-dev/commit-status-updater@v1.1.0
+        with:
+          token: ${{ secrets.COMMIT_TOKEN }}
+          status: success
+          description: Passed Snyk IaC Security tests
+          successComment: Passed Snyk IaC Security tests
