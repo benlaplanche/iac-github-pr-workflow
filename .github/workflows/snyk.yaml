@@ -20,9 +20,14 @@ jobs:
       - uses: github/codeql-action/upload-sarif@v1
         with:
           sarif_file: snyk.sarif
-      - uses: ouzi-dev/commit-status-updater@v1.1.0
+      - name: Snyk IaC Security Check
+        uses: ouzi-dev/commit-status-updater@v1.1.0
         with:
-          addHoldComment: "true"
+          token: ${{ secrets.COMMIT_TOKEN }}
+          status: failure
+          description: Failed Snyk IaC Security tests
+          failComment: Failed Snyk IaC Security tests
+          addHoldComment: Failed Snyk IaC
       # - if: always()
       #   uses: ouzi-dev/commit-status-updater@v1.1.0
       #   with:
