@@ -22,18 +22,20 @@ jobs:
         with:
           sarif_file: snyk.sarif
       - name: Update status as failed
-        if: steps.snyk-iac.outcome == 'failure'
+        # if: steps.snyk-iac.outcome == 'failure'
+        if: ${{ failure() }}
         uses: ouzi-dev/commit-status-updater@v1.1.0
         with:
           token: ${{ secrets.COMMIT_TOKEN }}
           status: failure
           description: Failed Snyk IaC Security tests
           failComment: Failed Snyk IaC Security tests
-      - name: Update status as success
-        if: steps.snyk-iac.outcome == 'success'
-        uses: ouzi-dev/commit-status-updater@v1.1.0
-        with:
-          token: ${{ secrets.COMMIT_TOKEN }}
-          status: success
-          description: Passed Snyk IaC Security tests
-          successComment: Passed Snyk IaC Security tests
+      # - name: Update status as success
+      #   # if: steps.snyk-iac.outcome == 'success'
+      #   if: ${{ success() }}
+      #   uses: ouzi-dev/commit-status-updater@v1.1.0
+      #   with:
+      #     token: ${{ secrets.COMMIT_TOKEN }}
+      #     status: success
+      #     description: Passed Snyk IaC Security tests
+      #     successComment: Passed Snyk IaC Security tests
