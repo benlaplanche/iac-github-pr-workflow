@@ -27,7 +27,7 @@ spec:
             initialDelaySeconds: 15
             periodSeconds: 20
           securityContext:
-            # runAsNonRoot: true
+            runAsNonRoot: true
             readOnlyRootFilesystem: true
             capabilities:
               drop:
